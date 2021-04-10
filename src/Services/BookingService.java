@@ -8,17 +8,22 @@ import java.time.LocalDate;
 
 public class BookingService {
 
-    public BookingService() {}
+    HotelPersistenceService hotelPersistenceService;
 
-    private Booking findBookingByGuest(Guest guest, LocalDate start, LocalDate end){
+    public BookingService() {
+        // Mock object used for testing
+        this.hotelPersistenceService = new HotelPersistenceImplementationMock();
+    }
+
+    public Booking findBookingByGuest(Guest guest, LocalDate start, LocalDate end){
 
     }
 
-    private boolean makeBooking(Guest guest, LocalDate start, LocalDate end, Room room){
+    public boolean makeBooking(Guest guest, LocalDate start, LocalDate end, Room room){
 
     }
 
-    private boolean deleteBooking(Booking booking) {
+    public boolean deleteBooking(Booking booking) {
 
     }
 

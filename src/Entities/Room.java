@@ -1,30 +1,31 @@
 package Entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class Room{
 
   private String name;
-  private List<LocalDate[]> availability;
+  private ArrayList<LocalDate[]> availability;
   private int beds;
   private boolean aircon;
   private boolean shower;
   private Double price;
-  private List<Booking> bookings;
+  private ArrayList<Booking> bookings;
   private Hotel hotel;
 
-  public Room(String name, List<LocalDate[]> availability, int beds, boolean aircon,
-    boolean shower, Double price, List<Booking> bookings, Hotel hotel){
-      this.name=name;
-      this.availability=availability;
-      this.beds=beds;
-      this.aircon=aircon;
-      this.shower=shower;
-      this.price=price;
-      this.bookings=bookings;
-      this.hotel=hotel;
+  public Room(String name, int beds, boolean aircon,
+    boolean shower, Double price, Hotel hotel){
+      this.name = name;
+      this.availability = new ArrayList<LocalDate[]>();
+      this.beds = beds;
+      this.aircon = aircon;
+      this.shower = shower;
+      this.price = price;
+      this.bookings = new ArrayList<Booking>();
+      this.hotel = hotel;
     }
 
   public String getName() {
@@ -39,8 +40,12 @@ public class Room{
     return availability;
   }
 
-  public void setAvailability(List<LocalDate[]> availability) {
+  public void setAvailability(ArrayList<LocalDate[]> availability) {
     this.availability = availability;
+  }
+
+  public void addAvailability(LocalDate[] availability){
+    this.availability.add(availability);
   }
 
   public int getBeds() {
@@ -75,12 +80,16 @@ public class Room{
     this.price = price;
   }
 
-  public List<Booking> getBookings() {
+  public ArrayList<Booking> getBookings() {
     return bookings;
   }
 
-  public void setBookings(List<Booking> bookings) {
+  public void setBookings(ArrayList<Booking> bookings) {
     this.bookings = bookings;
+  }
+
+  public void addBooking(Booking booking){
+    this.bookings.add(booking);
   }
 
   public Hotel getHotel() {

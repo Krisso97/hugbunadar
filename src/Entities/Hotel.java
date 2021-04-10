@@ -10,7 +10,7 @@ public class Hotel{
   private String country;
   private ArrayList<Room> rooms;
 
-  public Hotel(String name, String street, String area, String postalCode, String country, List<Room> rooms){
+  public Hotel(String name, String street, String area, String postalCode, String country){
     this.name = name;
     this.street = street;
     this.area=area;
@@ -65,5 +65,9 @@ public class Hotel{
 
   public void setRooms(ArrayList<Room> rooms) {
     this.rooms = rooms;
+  }
+
+  public void addRoom(Room room){
+    this.rooms.add(room);
   }
 }
