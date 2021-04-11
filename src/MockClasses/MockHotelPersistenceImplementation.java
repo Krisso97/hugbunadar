@@ -35,6 +35,14 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 		}
 		return hotels;
 	}
+
+	public ArrayList<Hotel> getHotelsByArea(String area){
+		ArrayList<Hotel> hotels = new ArrayList<>();
+		for(Hotel hotel: database.getHotels()){
+			if(hotel.getArea().contains(area)) hotels.add(hotel);
+		}
+		return hotels;
+	}
 	
 	public ArrayList<Hotel> getHotelsByDate(LocalDate start, LocalDate end){
 		ArrayList<Hotel> hotels = new ArrayList<>();
@@ -123,5 +131,23 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 		}
 		return false;
 	}
-	
+
+	public boolean deleteBooking(Booking booking){
+		// Very messy approach, goes through everything and copies
+		// every booking exept the one to be deleted. Ok for test
+		// and mock object, would have to be much improved if
+		// used in real database...
+		for(Room roomDB: getHotelByBooking(booking).getRooms()){
+			ArrayList<Booking> bookings = new ArrayList<>();
+			for(Booking bookingDB: roomDB.getBookings()){
+				if(!bookingDB.equals(booking)){
+					bookings.add(bookingDB);
+				}
+			}
+			roomDB.setBookings(bookings);
+		}
+
+		// Will always be successful in tests so always returns true
+		return true;
+	}
 }
