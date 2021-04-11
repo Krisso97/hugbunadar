@@ -70,4 +70,26 @@ public class Hotel{
   public void addRoom(Room room){
     this.rooms.add(room);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    // Check if itself
+    if (this == o)
+      return true;
+    // Check if null
+    if (o == null)
+      return false;
+    // Check if same type
+    if (!(o instanceof Hotel))
+      return false;
+    // Compare attributes
+    Hotel hotel = (Hotel) o;
+    if(name.equals(hotel.getName()) && street.equals(hotel.getStreet()) && area.equals(hotel.getArea())
+       && postalCode.equals(hotel.getPostalCode()) && country.equals(hotel.getCountry()) && rooms.equals(hotel.getRooms())){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
 }

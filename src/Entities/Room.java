@@ -36,7 +36,7 @@ public class Room{
     this.name = name;
   }
 
-  public List<LocalDate[]> getAvailability() {
+  public ArrayList<LocalDate[]> getAvailability() {
     return availability;
   }
 
@@ -99,4 +99,27 @@ public class Room{
   public void setHotel(Hotel hotel) {
     this.hotel = hotel;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    // Check if itself
+    if (this == o)
+      return true;
+    // Check if null
+    if (o == null)
+      return false;
+    // Check if same type
+    if (!(o instanceof Room))
+      return false;
+    // Compare attributes
+    Room room = (Room) o;
+    if(name.equals(room.getName()) && availability.equals(room.getAvailability()) && (beds == room.getBeds())
+       && (aircon == room.isAircon()) && (shower == room.isShower()) && (price == room.getPrice())
+       && bookings.equals(room.getBookings()) && hotel.equals(room.getHotel())){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
 }

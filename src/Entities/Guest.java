@@ -36,4 +36,24 @@ public class Guest{
   public void setEmail(String email){
     this.email=email;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    // Check if itself
+    if (this == o)
+      return true;
+    // Check if null
+    if (o == null)
+      return false;
+    // Check if same type
+    if (!(o instanceof Guest))
+      return false;
+    // Compare attributes
+    Guest guest = (Guest) o;
+    if(name.equals(guest.getName()) && address.equals(guest.getAddress()) && email.equals(guest.getEmail())){
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

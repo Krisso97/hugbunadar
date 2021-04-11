@@ -3,6 +3,7 @@ package Services;
 import Entities.Booking;
 import Entities.Guest;
 import Entities.Room;
+import MockClasses.MockHotelPersistenceImplementation;
 
 import java.time.LocalDate;
 
@@ -12,7 +13,7 @@ public class BookingService {
 
     public BookingService() {
         // Mock object used for testing
-        this.hotelPersistenceService = new HotelPersistenceImplementationMock();
+        this.hotelPersistenceService = new MockHotelPersistenceImplementation();
     }
 
     public Booking findBookingByGuest(Guest guest, LocalDate start, LocalDate end){

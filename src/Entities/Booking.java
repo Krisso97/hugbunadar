@@ -36,4 +36,24 @@ public class Booking{
   public void setGuest(Guest guest){
     this.guest=guest;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    // Check if itself
+    if (this == o)
+      return true;
+    // Check if null
+    if (o == null)
+      return false;
+    // Check if same type
+    if (!(o instanceof Booking))
+      return false;
+    // Compare attributes
+    Booking booking = (Booking) o;
+    if(start.isEqual(booking.getStart()) && end.isEqual(booking.getEnd()) && guest.equals(booking.getGuest())){
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

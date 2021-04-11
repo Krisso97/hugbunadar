@@ -5,10 +5,9 @@ import Entities.Guest;
 import Entities.Hotel;
 import Entities.Room;
 import Services.BookingService;
-import Services.HotelPersistenceImplementationMock;
+import MockClasses.MockHotelPersistenceImplementation;
 import Services.HotelPersistenceService;
 
-import javax.naming.NameAlreadyBoundException;
 import java.time.LocalDate;
 
 public class HotelSearch {
@@ -17,7 +16,7 @@ public class HotelSearch {
 
     public HotelSearch() {
         // Mock object used for testing
-        this.hotelPersistenceService = new HotelPersistenceImplementationMock();
+        this.hotelPersistenceService = new MockHotelPersistenceImplementation();
         this.bookingService = new BookingService();
     }
 
