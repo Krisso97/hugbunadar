@@ -1,6 +1,7 @@
 package Entities;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +9,12 @@ import java.util.List;
 public class Room{
 
   private String name;
-  private ArrayList<LocalDate[]> availability;
+  private List<LocalDate[]> availability;
   private int beds;
   private boolean aircon;
   private boolean shower;
   private Double price;
-  private ArrayList<Booking> bookings;
+  private List<Booking> bookings;
   private Hotel hotel;
 
   public Room(String name, int beds, boolean aircon,
@@ -36,7 +37,7 @@ public class Room{
     this.name = name;
   }
 
-  public ArrayList<LocalDate[]> getAvailability() {
+  public List<LocalDate[]> getAvailability() {
     return availability;
   }
 
@@ -80,7 +81,7 @@ public class Room{
     this.price = price;
   }
 
-  public ArrayList<Booking> getBookings() {
+  public List<Booking> getBookings() {
     return bookings;
   }
 
@@ -122,4 +123,14 @@ public class Room{
     }
   }
 
+  @Override
+  public String toString() {
+    String availString = "";
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    for(LocalDate[] dates:availability){
+      availString = availString + ", " + dates[0].format(formatter) + " to " + dates[1].format(formatter);
+    }
+
+    return name + " is free on:" + availString.substring(1);
+  }
 }

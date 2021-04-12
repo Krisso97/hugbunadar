@@ -20,10 +20,15 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 		this.database = MockDatabase.getInstance();
 	}
 
+	public ArrayList<Hotel> getAllHotels(){
+		ArrayList<Hotel> hotels = database.getHotels();
+		return hotels;
+	}
+
 	public ArrayList<Hotel> getHotelsByName(String name){
 		ArrayList<Hotel> hotels = new ArrayList<>();
 		for(Hotel hotel: database.getHotels()){
-			if(hotel.getName().contains(name)) hotels.add(hotel);
+			if(hotel.getName().toLowerCase().contains(name)) hotels.add(hotel);
 		}
 		return hotels;
 	}
@@ -31,7 +36,7 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 	public ArrayList<Hotel> getHotelsByCountry(String country){
 		ArrayList<Hotel> hotels = new ArrayList<>();
 		for(Hotel hotel: database.getHotels()){
-			if(hotel.getCountry().contains(country)) hotels.add(hotel);
+			if(hotel.getCountry().toLowerCase().contains(country)) hotels.add(hotel);
 		}
 		return hotels;
 	}
@@ -39,7 +44,7 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 	public ArrayList<Hotel> getHotelsByArea(String area){
 		ArrayList<Hotel> hotels = new ArrayList<>();
 		for(Hotel hotel: database.getHotels()){
-			if(hotel.getArea().contains(area)) hotels.add(hotel);
+			if(hotel.getArea().toLowerCase().contains(area)) hotels.add(hotel);
 		}
 		return hotels;
 	}
@@ -124,7 +129,7 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 		Hotel hotel = room.getHotel();
 		for(Room roomDB: hotel.getRooms()){
 			if(roomDB.equals(room)){
-				// Note, validation is handled by the BookingService class
+				// Note, free date validation is handled by the BookingService class
 				roomDB.addBooking(booking);
 				return true;
 			}

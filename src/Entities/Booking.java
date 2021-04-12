@@ -1,6 +1,7 @@
 package Entities;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Booking{
   private LocalDate start;
@@ -55,5 +56,11 @@ public class Booking{
     }else{
       return false;
     }
+  }
+
+  @Override
+  public String toString() {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    return guest.getName() + ", from " +  start.format(formatter) + " to " + end.format(formatter);
   }
 }

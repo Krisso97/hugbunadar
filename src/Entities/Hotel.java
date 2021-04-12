@@ -8,7 +8,7 @@ public class Hotel{
   private String area;
   private String postalCode;
   private String country;
-  private ArrayList<Room> rooms;
+  private List<Room> rooms;
 
   public Hotel(String name, String street, String area, String postalCode, String country){
     this.name = name;
@@ -59,7 +59,7 @@ public class Hotel{
     this.country = country;
   }
 
-  public ArrayList<Room> getRooms() {
+  public List<Room> getRooms() {
     return rooms;
   }
 
@@ -92,4 +92,8 @@ public class Hotel{
     }
   }
 
+  @Override
+  public String toString() {
+    return name + ", " + street + ", " + area + ", " + postalCode + ", " + country;
+  }
 }

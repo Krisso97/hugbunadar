@@ -8,24 +8,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 
-
-<FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="504.0" prefWidth="666.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="504.0" prefWidth="666.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.Controller">
    <children>
       <AnchorPane prefHeight="208.0" prefWidth="196.0">
          <children>
-            <Button layoutX="130.0" layoutY="29.0" mnemonicParsing="false" text="Search" />
-            <TextField layoutX="14.0" layoutY="29.0" prefHeight="25.0" prefWidth="110.0" />
-            <Button layoutX="130.0" layoutY="76.0" mnemonicParsing="false" text="Search" />
-            <TextField layoutX="14.0" layoutY="76.0" prefHeight="25.0" prefWidth="110.0" />
-            <Button layoutX="130.0" layoutY="125.0" mnemonicParsing="false" text="Search" />
-            <TextField layoutX="14.0" layoutY="125.0" prefHeight="25.0" prefWidth="110.0" />
-            <Button layoutX="75.0" layoutY="257.0" mnemonicParsing="false" text="Search" />
+            <Button fx:id="nameSearchBtn" layoutX="130.0" layoutY="29.0" mnemonicParsing="false" onMouseClicked="#nameSearchBtnClicked" text="Search" />
+            <TextField fx:id="nameSearchField" layoutX="14.0" layoutY="29.0" prefHeight="25.0" prefWidth="110.0" />
+            <Button fx:id="areaSearchBtn" layoutX="130.0" layoutY="76.0" mnemonicParsing="false" onMouseClicked="#areaSearchBtnClicked" text="Search" />
+            <TextField fx:id="areaSearchField" layoutX="14.0" layoutY="76.0" prefHeight="25.0" prefWidth="110.0" />
+            <Button fx:id="countrySearchBtn" layoutX="130.0" layoutY="125.0" mnemonicParsing="false" onMouseClicked="#countrySearchBtnClicked" text="Search" />
+            <TextField fx:id="countrySearchField" layoutX="14.0" layoutY="125.0" prefHeight="25.0" prefWidth="110.0" />
+            <Button fx:id="dateSearchBtn" layoutX="75.0" layoutY="257.0" mnemonicParsing="false" onMouseClicked="#dateSearchBtnClicked" text="Search" />
             <Label layoutX="14.0" layoutY="10.0" text="Search by Name" />
             <Label layoutX="14.0" layoutY="57.0" text="Search by Area" />
             <Label layoutX="14.0" layoutY="106.0" text="Search by Country" />
             <Label layoutX="14.0" layoutY="164.0" text="Search by dates" />
-            <DatePicker layoutX="44.0" layoutY="188.0" prefHeight="25.0" prefWidth="141.0" />
-            <DatePicker layoutX="44.0" layoutY="226.0" prefHeight="25.0" prefWidth="141.0" />
+            <DatePicker fx:id="startSearchDatePicker" layoutX="44.0" layoutY="188.0" prefHeight="25.0" prefWidth="141.0" />
+            <DatePicker fx:id="endSearchDatePicker" layoutX="44.0" layoutY="226.0" prefHeight="25.0" prefWidth="141.0" />
             <Label layoutX="11.0" layoutY="192.0" text="Start" />
             <Label layoutX="14.0" layoutY="230.0" text="End" />
          </children>
@@ -33,30 +32,30 @@
       <AnchorPane prefHeight="291.0" prefWidth="461.0">
          <children>
             <Label layoutX="14.0" layoutY="6.0" text="Hotel" />
-            <ListView layoutX="14.0" layoutY="24.0" prefHeight="250.0" prefWidth="200.0" />
+            <ListView fx:id="hotelsListView" layoutX="14.0" layoutY="24.0" onMouseClicked="#hotelsListViewClicked" prefHeight="250.0" prefWidth="200.0" />
             <Label layoutX="253.0" layoutY="6.0" text="Available Rooms" />
-            <ListView layoutX="251.0" layoutY="24.0" prefHeight="250.0" prefWidth="196.0" />
+            <ListView fx:id="roomsListView" layoutX="251.0" layoutY="24.0" prefHeight="250.0" prefWidth="196.0" />
          </children>
       </AnchorPane>
       <AnchorPane prefHeight="213.0" prefWidth="213.0">
          <children>
-            <Button layoutX="11.0" layoutY="185.0" mnemonicParsing="false" text="Create booking" />
+            <Button fx:id="createBookingBtn" layoutX="11.0" layoutY="185.0" mnemonicParsing="false" onMouseClicked="#createBookingBtnClicked" text="Create booking" />
             <Label layoutX="11.0" layoutY="32.0" text="Name" />
-            <TextField layoutX="92.0" layoutY="28.0" prefHeight="25.0" prefWidth="110.0" />
+            <TextField fx:id="nameBookingField" layoutX="92.0" layoutY="28.0" prefHeight="25.0" prefWidth="110.0" />
             <Label layoutX="11.0" layoutY="64.0" text="Address" />
-            <TextField layoutX="92.0" layoutY="60.0" prefHeight="25.0" prefWidth="110.0" />
+            <TextField fx:id="addressBookingField" layoutX="92.0" layoutY="60.0" prefHeight="25.0" prefWidth="110.0" />
             <Label layoutX="12.0" layoutY="96.0" text="Email" />
-            <TextField layoutX="91.0" layoutY="93.0" prefHeight="25.0" prefWidth="110.0" />
+            <TextField fx:id="emailBookingField" layoutX="91.0" layoutY="93.0" prefHeight="25.0" prefWidth="110.0" />
             <Label layoutX="8.0" layoutY="9.0" text="Make booking" />
             <Label layoutX="11.0" layoutY="129.0" text="Start" />
             <Label layoutX="12.0" layoutY="159.0" text="End" />
-            <DatePicker layoutX="92.0" layoutY="128.0" prefHeight="25.0" prefWidth="110.0" />
-            <DatePicker layoutX="91.0" layoutY="156.0" prefHeight="25.0" prefWidth="110.0" />
+            <DatePicker fx:id="startBookingDatePicker" layoutX="92.0" layoutY="128.0" prefHeight="25.0" prefWidth="110.0" />
+            <DatePicker fx:id="endBookingDatePicker" layoutX="91.0" layoutY="156.0" prefHeight="25.0" prefWidth="110.0" />
          </children>
       </AnchorPane>
       <AnchorPane prefHeight="213.0" prefWidth="431.0">
          <children>
-            <ListView layoutX="104.0" layoutY="37.0" prefHeight="160.0" prefWidth="209.0" />
+            <ListView fx:id="bookingsListView" layoutX="20.0" layoutY="37.0" prefHeight="160.0" prefWidth="386.0" />
             <Label layoutX="108.0" layoutY="16.0" text="Current active bookings" />
          </children>
       </AnchorPane>

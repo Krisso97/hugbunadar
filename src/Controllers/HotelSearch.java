@@ -21,16 +21,19 @@ public class HotelSearch {
         this.bookingService = new BookingService();
     }
 
+    public ArrayList<Hotel> getAll(){
+        return hotelPersistenceService.getAllHotels();
+    }
     public ArrayList<Hotel> searchByName(String name){
-        return hotelPersistenceService.getHotelsByName(name);
+        return hotelPersistenceService.getHotelsByName(name.toLowerCase());
     }
 
     public ArrayList<Hotel> searchByArea(String area){
-        return hotelPersistenceService.getHotelsByArea(area);
+        return hotelPersistenceService.getHotelsByArea(area.toLowerCase());
     }
 
     public ArrayList<Hotel> searchByCountry(String country){
-        return hotelPersistenceService.getHotelsByCountry(country);
+        return hotelPersistenceService.getHotelsByCountry(country.toLowerCase());
     }
 
     public ArrayList<Hotel> searchByDate(LocalDate start, LocalDate end){

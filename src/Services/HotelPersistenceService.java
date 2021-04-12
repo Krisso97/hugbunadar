@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public interface HotelPersistenceService {
 
+    public ArrayList<Hotel> getAllHotels();
     public ArrayList<Hotel> getHotelsByName(String name);
     public ArrayList<Hotel> getHotelsByArea(String area);
     public ArrayList<Hotel> getHotelsByCountry(String country);
