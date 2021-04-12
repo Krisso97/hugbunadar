@@ -7,6 +7,7 @@ import Entities.Room;
 import MockClasses.MockHotelPersistenceImplementation;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class BookingService {
 
@@ -26,8 +27,8 @@ public class BookingService {
         // Validates availability of room and if available inserts booking into database
         for(LocalDate[] dates: room.getAvailability()){
             if((start.isBefore(dates[0]) || start.isEqual(dates[0])) && (end.isBefore(dates[1]) || end.isEqual((dates[1])))){
-                Booking booking = new Booking(start, end, guest);
-                return hotelPersistenceService.insertBooking(booking, room);
+                Booking booking = new Booking(start, end, guest, room);
+                return hotelPersistenceService.insertBooking(booking);
             }
         }
         return false;

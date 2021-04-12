@@ -112,11 +112,10 @@ public class Room{
     // Check if same type
     if (!(o instanceof Room))
       return false;
-    // Compare attributes
+    // Compare attributes, note does not include bookings in comparison since they can change between queries!
     Room room = (Room) o;
     if(name.equals(room.getName()) && availability.equals(room.getAvailability()) && (beds == room.getBeds())
-       && (aircon == room.isAircon()) && (shower == room.isShower()) && (price == room.getPrice())
-       && bookings.equals(room.getBookings()) && hotel.equals(room.getHotel())){
+       && (aircon == room.isAircon()) && (shower == room.isShower()) && (price == room.getPrice()) && hotel.equals(room.getHotel())){
       return true;
     }else{
       return false;

@@ -121,7 +121,10 @@ public class Controller implements Initializable {
         if((name != null) && (address != null) && (email != null) && (start != null) &&
                 (end != null) && (room != null)){
             hotelSearch.bookRoom(name, address, email, start, end, room);
+            roomsListView.setItems(null);
+            hotelsListView.setItems(null);
             getActiveBookings();
+
         }
     }
 

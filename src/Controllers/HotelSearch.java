@@ -10,6 +10,7 @@ import Services.HotelPersistenceService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HotelSearch {
     private HotelPersistenceService hotelPersistenceService;
@@ -21,22 +22,22 @@ public class HotelSearch {
         this.bookingService = new BookingService();
     }
 
-    public ArrayList<Hotel> getAll(){
+    public List<Hotel> getAll(){
         return hotelPersistenceService.getAllHotels();
     }
-    public ArrayList<Hotel> searchByName(String name){
+    public List<Hotel> searchByName(String name){
         return hotelPersistenceService.getHotelsByName(name.toLowerCase());
     }
 
-    public ArrayList<Hotel> searchByArea(String area){
+    public List<Hotel> searchByArea(String area){
         return hotelPersistenceService.getHotelsByArea(area.toLowerCase());
     }
 
-    public ArrayList<Hotel> searchByCountry(String country){
+    public List<Hotel> searchByCountry(String country){
         return hotelPersistenceService.getHotelsByCountry(country.toLowerCase());
     }
 
-    public ArrayList<Hotel> searchByDate(LocalDate start, LocalDate end){
+    public List<Hotel> searchByDate(LocalDate start, LocalDate end){
         return hotelPersistenceService.getHotelsByDate(start, end);
     }
 
@@ -60,6 +61,6 @@ public class HotelSearch {
 
     public boolean cancelRoom(String name, String address, String email, LocalDate start,
                                      LocalDate end, Room room){
-        return bookingService.deleteBooking(new Booking(start, end, new Guest(name, address, email)));
+        return bookingService.deleteBooking(new Booking(start, end, new Guest(name, address, email), room));
     }
 }

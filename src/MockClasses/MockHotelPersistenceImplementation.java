@@ -10,6 +10,7 @@ import Services.HotelPersistenceService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MockHotelPersistenceImplementation implements HotelPersistenceService {
 
@@ -20,12 +21,12 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 		this.database = MockDatabase.getInstance();
 	}
 
-	public ArrayList<Hotel> getAllHotels(){
+	public List<Hotel> getAllHotels(){
 		ArrayList<Hotel> hotels = database.getHotels();
 		return hotels;
 	}
 
-	public ArrayList<Hotel> getHotelsByName(String name){
+	public List<Hotel> getHotelsByName(String name){
 		ArrayList<Hotel> hotels = new ArrayList<>();
 		for(Hotel hotel: database.getHotels()){
 			if(hotel.getName().toLowerCase().contains(name)) hotels.add(hotel);
@@ -33,7 +34,7 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 		return hotels;
 	}
 	
-	public ArrayList<Hotel> getHotelsByCountry(String country){
+	public List<Hotel> getHotelsByCountry(String country){
 		ArrayList<Hotel> hotels = new ArrayList<>();
 		for(Hotel hotel: database.getHotels()){
 			if(hotel.getCountry().toLowerCase().contains(country)) hotels.add(hotel);
@@ -41,7 +42,7 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 		return hotels;
 	}
 
-	public ArrayList<Hotel> getHotelsByArea(String area){
+	public List<Hotel> getHotelsByArea(String area){
 		ArrayList<Hotel> hotels = new ArrayList<>();
 		for(Hotel hotel: database.getHotels()){
 			if(hotel.getArea().toLowerCase().contains(area)) hotels.add(hotel);
@@ -49,7 +50,7 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 		return hotels;
 	}
 	
-	public ArrayList<Hotel> getHotelsByDate(LocalDate start, LocalDate end){
+	public List<Hotel> getHotelsByDate(LocalDate start, LocalDate end){
 		ArrayList<Hotel> hotels = new ArrayList<>();
 		// Loop checks if any rooms available during the period and if
 		// so adds hotel object to return array
@@ -66,7 +67,7 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 		return hotels;
 	}
 	
-	public ArrayList<Hotel> getHotelsByGuest(Guest guest){
+	public List<Hotel> getHotelsByGuest(Guest guest){
 		ArrayList<Hotel> hotels = new ArrayList<>();
 		// Loop checks if guest has any bookings at any hotel
 		for(Hotel hotel: database.getHotels()){
@@ -113,7 +114,38 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 
 		return hotel;
 	}
-	
+
+	public Room getRoomByBooking(Booking booking){
+		return booking.getRoom();
+	}
+
+
+	public boolean updateRoom(Room room){
+		Hotel updatedHotel = null;
+		for(Hotel hotelDB: database.getHotels()){
+			for(Room roomDB: hotelDB.getRooms()){
+				if(roomDB.equals(room)){
+					updatedHotel = hotelDB;
+				}
+			}
+
+		}
+		if(updatedHotel == null){
+			return false;
+		}else{
+			ArrayList<Room> updatedRooms = new ArrayList<>();
+			for(Room roomDB: updatedHotel.getRooms()){
+				if(roomDB.equals(room)){
+					updatedRooms.add(room);
+				}else{
+					updatedRooms.add(roomDB);
+				}
+			}
+			updatedHotel.setRooms(updatedRooms);
+			return true;
+		}
+	}
+
 	public boolean updateBooking(Booking booking){
 		// TODO
 		// Held við getum alveg sleppt þessu, frekar ná inn basic virkni
@@ -125,12 +157,35 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 	// threads or users trying to access mock database at the same time
 	// since the hotel object in room parameter might have changed since
 	// the search query sent the object to the user in the first place.
-	public boolean insertBooking(Booking booking, Room room){
+	public boolean insertBooking(Booking booking){
+		Room room = booking.getRoom();
 		Hotel hotel = room.getHotel();
 		for(Room roomDB: hotel.getRooms()){
 			if(roomDB.equals(room)){
 				// Note, free date validation is handled by the BookingService class
 				roomDB.addBooking(booking);
+				// Updates availability of room to reflect new booking
+				ArrayList<LocalDate[]> newAvailability = new ArrayList<>();
+				for(LocalDate[] dates: roomDB.getAvailability()){
+					if(dates[0].isBefore(booking.getStart()) && dates[1].isAfter(booking.getEnd())){
+						LocalDate[] lowerPartion = {dates[0], booking.getStart().minusDays(1)};
+						LocalDate[] upperPartion = {booking.getEnd().plusDays(1), dates[1]};
+						newAvailability.add(lowerPartion);
+						newAvailability.add(upperPartion);
+					}else if(dates[0].isBefore(booking.getStart()) && dates[1].isEqual(booking.getEnd())){
+						LocalDate[] lowerPartion = {dates[0], booking.getStart().minusDays(1)};
+						newAvailability.add(lowerPartion);
+					}else if(dates[0].isEqual(booking.getStart()) && dates[1].isAfter(booking.getEnd())){
+						LocalDate[] upperPartion = {booking.getEnd().plusDays(1), dates[1]};
+						newAvailability.add(upperPartion);
+					}else if(dates[0].isEqual(booking.getStart()) && dates[1].isEqual(booking.getEnd())){
+						// Do nothing - will not be added to newAvailability since booking covers whole
+						// availability period
+					}else{
+						newAvailability.add(dates);
+					}
+				}
+				roomDB.setAvailability(newAvailability);
 				return true;
 			}
 		}
