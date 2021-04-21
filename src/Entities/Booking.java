@@ -44,6 +44,7 @@ public class Booking{
 
   public void setRoom(Room room) { this.room = room; }
 
+
   @Override
   public boolean equals(Object o) {
     // Check if itself

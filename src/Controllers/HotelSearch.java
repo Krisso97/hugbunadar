@@ -4,12 +4,11 @@ import Entities.Booking;
 import Entities.Guest;
 import Entities.Hotel;
 import Entities.Room;
-import Services.BookingService;
 import MockClasses.MockHotelPersistenceImplementation;
+import Services.BookingService;
 import Services.HotelPersistenceService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HotelSearch {

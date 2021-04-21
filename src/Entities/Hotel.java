@@ -85,7 +85,7 @@ public class Hotel{
     // Compare attributes
     Hotel hotel = (Hotel) o;
     if(name.equals(hotel.getName()) && street.equals(hotel.getStreet()) && area.equals(hotel.getArea())
-       && postalCode.equals(hotel.getPostalCode()) && country.equals(hotel.getCountry()) && rooms.equals(hotel.getRooms())){
+       && postalCode.equals(hotel.getPostalCode()) && country.equals(hotel.getCountry())){
       return true;
     }else{
       return false;

@@ -41,6 +41,7 @@ public class Room{
     return availability;
   }
 
+
   public void setAvailability(ArrayList<LocalDate[]> availability) {
     this.availability = availability;
   }
@@ -93,6 +94,11 @@ public class Room{
     this.bookings.add(booking);
   }
 
+  public void removeBooking(Booking booking) {
+    this.bookings.set(this.bookings.indexOf(booking),null);
+    this.bookings.remove(null);
+  }
+
   public Hotel getHotel() {
     return hotel;
   }
@@ -114,8 +120,7 @@ public class Room{
       return false;
     // Compare attributes, note does not include bookings in comparison since they can change between queries!
     Room room = (Room) o;
-    if(name.equals(room.getName()) && availability.equals(room.getAvailability()) && (beds == room.getBeds())
-       && (aircon == room.isAircon()) && (shower == room.isShower()) && (price == room.getPrice()) && hotel.equals(room.getHotel())){
+    if(name.equals(room.getName()) && hotel.equals(room.getHotel())){
       return true;
     }else{
       return false;

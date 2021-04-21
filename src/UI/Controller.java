@@ -2,6 +2,7 @@ package UI;
 
 import Controllers.HotelSearch;
 import Entities.Booking;
+import Entities.Guest;
 import Entities.Hotel;
 import Entities.Room;
 import javafx.beans.InvalidationListener;
@@ -53,6 +54,9 @@ public class Controller implements Initializable {
     private Button dateSearchBtn;
     @FXML
     private Button createBookingBtn;
+    @FXML
+    private Button deleteBookingBtn;
+
 
     @FXML
     private ListView hotelsListView;
@@ -70,7 +74,6 @@ public class Controller implements Initializable {
         hotelSearch = new HotelSearch();
         activeBookings = FXCollections.observableArrayList();
         getActiveBookings();
-        bookingsListView.setItems(activeBookings);
     }
 
 
@@ -124,20 +127,27 @@ public class Controller implements Initializable {
             roomsListView.setItems(null);
             hotelsListView.setItems(null);
             getActiveBookings();
-
         }
     }
 
+    public void deleteBookingBtnClicked(MouseEvent mouseEvent){
+        Booking booking = (Booking) bookingsListView.getSelectionModel().getSelectedItem();
+        Guest guest = booking.getGuest();
+        hotelSearch.cancelRoom(guest.getName(), guest.getAddress(),guest.getEmail(),
+                booking.getStart(), booking.getEnd(),booking.getRoom());
+        roomsListView.setItems(null);
+        hotelsListView.setItems(null);
+        getActiveBookings();
+    }
+
     public void getActiveBookings(){
+        activeBookings = FXCollections.observableArrayList();
         for(Hotel hotel: hotelSearch.getAll()){
             for(Room room: hotel.getRooms()){
-                for(Booking booking: room.getBookings()){
-                    if(!activeBookings.contains(booking)){
-                        activeBookings.add(booking);
-                    }
-                }
+                activeBookings.addAll(room.getBookings());
             }
         }
+        bookingsListView.setItems(activeBookings);
     }
 
 

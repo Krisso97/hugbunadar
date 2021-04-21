@@ -8,9 +8,7 @@ import Entities.Room;
 import Services.HotelPersistenceService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MockHotelPersistenceImplementation implements HotelPersistenceService {
 
@@ -160,54 +158,144 @@ public class MockHotelPersistenceImplementation implements HotelPersistenceServi
 	public boolean insertBooking(Booking booking){
 		Room room = booking.getRoom();
 		Hotel hotel = room.getHotel();
-		for(Room roomDB: hotel.getRooms()){
-			if(roomDB.equals(room)){
-				// Note, free date validation is handled by the BookingService class
-				roomDB.addBooking(booking);
-				// Updates availability of room to reflect new booking
-				ArrayList<LocalDate[]> newAvailability = new ArrayList<>();
-				for(LocalDate[] dates: roomDB.getAvailability()){
-					if(dates[0].isBefore(booking.getStart()) && dates[1].isAfter(booking.getEnd())){
-						LocalDate[] lowerPartion = {dates[0], booking.getStart().minusDays(1)};
-						LocalDate[] upperPartion = {booking.getEnd().plusDays(1), dates[1]};
-						newAvailability.add(lowerPartion);
-						newAvailability.add(upperPartion);
-					}else if(dates[0].isBefore(booking.getStart()) && dates[1].isEqual(booking.getEnd())){
-						LocalDate[] lowerPartion = {dates[0], booking.getStart().minusDays(1)};
-						newAvailability.add(lowerPartion);
-					}else if(dates[0].isEqual(booking.getStart()) && dates[1].isAfter(booking.getEnd())){
-						LocalDate[] upperPartion = {booking.getEnd().plusDays(1), dates[1]};
-						newAvailability.add(upperPartion);
-					}else if(dates[0].isEqual(booking.getStart()) && dates[1].isEqual(booking.getEnd())){
-						// Do nothing - will not be added to newAvailability since booking covers whole
-						// availability period
-					}else{
-						newAvailability.add(dates);
+
+		for(Hotel hotelDB: database.getHotels()) {
+			if (hotelDB.equals(hotel)) {
+				for (Room roomDB : hotelDB.getRooms()) {
+					if (roomDB.equals(room)) {
+						// Note, free date validation is handled by the BookingService class
+						roomDB.addBooking(booking);
+						// Updates availability of room to reflect new booking
+						ArrayList<LocalDate[]> newAvailability = new ArrayList<>();
+						for (LocalDate[] dates : roomDB.getAvailability()) {
+							if (dates[0].isBefore(booking.getStart()) && dates[1].isAfter(booking.getEnd())) {
+								// If within availabilty period then partion into two halves
+								LocalDate[] lowerPartion = {dates[0], booking.getStart().minusDays(1)};
+								LocalDate[] upperPartion = {booking.getEnd().plusDays(1), dates[1]};
+								newAvailability.add(lowerPartion);
+								newAvailability.add(upperPartion);
+							} else if (dates[0].isBefore(booking.getStart()) && dates[1].isEqual(booking.getEnd())) {
+								// If matches end of availabilty period then cut of end
+								LocalDate[] lowerPartion = {dates[0], booking.getStart().minusDays(1)};
+								newAvailability.add(lowerPartion);
+							} else if (dates[0].isEqual(booking.getStart()) && dates[1].isAfter(booking.getEnd())) {
+								// If matches start of availabilty period then cut of start
+								LocalDate[] upperPartion = {booking.getEnd().plusDays(1), dates[1]};
+								newAvailability.add(upperPartion);
+							} else if (dates[0].isEqual(booking.getStart()) && dates[1].isEqual(booking.getEnd())) {
+								// If matches availability period then it is removed.
+								// Do nothing - will not be added to newAvailability since booking covers whole
+								// availability period
+							} else {
+								// Add other older availabilities to new list
+								newAvailability.add(dates);
+							}
+						}
+						roomDB.setAvailability(newAvailability);
+						return true;
 					}
 				}
-				roomDB.setAvailability(newAvailability);
-				return true;
 			}
 		}
 		return false;
 	}
 
 	public boolean deleteBooking(Booking booking){
-		// Very messy approach, goes through everything and copies
-		// every booking exept the one to be deleted. Ok for test
-		// and mock object, would have to be much improved if
-		// used in real database...
-		for(Room roomDB: getHotelByBooking(booking).getRooms()){
-			ArrayList<Booking> bookings = new ArrayList<>();
-			for(Booking bookingDB: roomDB.getBookings()){
-				if(!bookingDB.equals(booking)){
-					bookings.add(bookingDB);
+		Room room = booking.getRoom();
+		Hotel hotel = room.getHotel();
+		database.getHotels();
+		for(Hotel hotelDB: database.getHotels()){
+			if(hotelDB.equals(hotel)) {
+				for (Room roomDB : hotelDB.getRooms()) {
+					if (roomDB.equals(room)) {
+						// Removes booking
+						roomDB.removeBooking(booking);
+
+						// Updates availability of room to reflect new booking
+						// Create queue to manage older availability values
+						ArrayList<LocalDate[]> newAvailability = new ArrayList<>();
+						ArrayList<LocalDate[]> oldAvailability = new ArrayList<>(roomDB.getAvailability());
+
+						if (oldAvailability.isEmpty()) {
+							// Handles outlier where Room availability list empty
+							newAvailability.add(new LocalDate[]{booking.getStart(), booking.getEnd()});
+						} else if (oldAvailability.get(0)[0].isAfter(booking.getEnd())) {
+							// Handles outlier where Room available before first availability in list
+							newAvailability.add(new LocalDate[]{booking.getStart(), booking.getEnd()});
+							newAvailability.addAll(oldAvailability);
+						}
+						else if (oldAvailability.get(oldAvailability.size() - 1)[1].isBefore(booking.getStart())) {
+							// Handles outlier where Room available after last availability in list
+							newAvailability = oldAvailability;
+							newAvailability.add(new LocalDate[]{booking.getStart(), booking.getEnd()});
+						}
+						else {
+							// Puts newly freed availability in correct position
+							newAvailability.add(oldAvailability.get(0));
+							for(int i = 0; i < oldAvailability.size(); i++){
+								if(oldAvailability.get(i)[1].isBefore(booking.getStart())){
+									newAvailability.add(new LocalDate[]{booking.getStart(), booking.getEnd()});
+								}
+								else {
+									newAvailability.add(new LocalDate[]{oldAvailability.get(i)[0], oldAvailability.get(i)[1]});
+								}
+							}
+						}
+
+						/* else if (oldAvailability.get(oldAvailability.size() - 1)[1].isBefore(booking.getStart())) {
+							// Handles outlier where Room available after last availability in list
+							newAvailability = oldAvailability;
+							newAvailability.add(new LocalDate[]{booking.getStart(), booking.getEnd()});
+						} else {
+							// Loops through list and finds where to position new availability
+							System.out.println("Er komið hingað");
+							for (int i = 0; i < oldAvailability.size() - 1; i ++) {
+								if (oldAvailability.get(i)[1].equals(booking.getStart().minusDays(1)) && oldAvailability.get(i + 1)[0].equals(booking.getEnd().plusDays(1))) {
+									// If fits between two availability periods then merge all three into one
+									newAvailability.add(new LocalDate[]{oldAvailability.get(i)[0], oldAvailability.get(i + 1)[1]});
+									System.out.println("Segir sé milli");
+								} else if (oldAvailability.get(i)[1].equals(booking.getStart().minusDays(1)) && !oldAvailability.get(i + 1)[0].equals(booking.getEnd().plusDays(1))) {
+									// If touches end of earlier availability period but not start of next then  add to earlier availabilty
+									newAvailability.add(new LocalDate[]{oldAvailability.get(i)[0], booking.getEnd()});
+									newAvailability.add(new LocalDate[]{oldAvailability.get(i + 1)[0], oldAvailability.get(i + 1)[1]});
+									System.out.println("Fyrri tengist");
+								} else if (!oldAvailability.get(i)[1].equals(booking.getStart().minusDays(1)) && oldAvailability.get(i + 1)[0].equals(booking.getEnd().plusDays(1))) {
+									// If touches start of later availability period but not end of previous one then add to later availabilty
+									newAvailability.add(new LocalDate[]{oldAvailability.get(i)[0], oldAvailability.get(i)[1]});
+									newAvailability.add(new LocalDate[]{booking.getStart(), oldAvailability.get(i + 1)[1]});
+									System.out.println("Seinni tengist");
+								} else {
+									// For other availabilities just add unchanged to new list
+									newAvailability.add(new LocalDate[]{oldAvailability.get(i)[0], oldAvailability.get(i)[1]});
+									newAvailability.add(new LocalDate[]{oldAvailability.get(i + 1)[0], oldAvailability.get(i + 1)[1]});
+									System.out.println("increment liðurinn");
+								}
+							}
+						}
+						*/
+
+						ArrayList<LocalDate[]> newAvailabilityMerged = new ArrayList<>();
+						// Runs through new Availability and merges all touching availabilities
+						newAvailabilityMerged.add(newAvailability.get(0));
+						int indexMerged = 0;
+						for (int i = 1; i < newAvailability.size(); i++) {
+							if (newAvailabilityMerged.get(indexMerged)[1].equals(newAvailability.get(i)[0].minusDays(1))) {
+								newAvailabilityMerged.set(indexMerged, new LocalDate[]{newAvailabilityMerged.get(indexMerged)[0], newAvailability.get(i)[1]});
+							} else {
+								newAvailabilityMerged.add(new LocalDate[]{newAvailability.get(i)[0], newAvailability.get(i)[1]});
+								indexMerged++;
+							}
+						}
+
+
+						// Finds hotel and room in database and sets new booking list
+						// and availability
+						roomDB.setAvailability(newAvailabilityMerged);
+						return true;
+					}
 				}
 			}
-			roomDB.setBookings(bookings);
 		}
-
-		// Will always be successful in tests so always returns true
-		return true;
+		return false;
 	}
 }
